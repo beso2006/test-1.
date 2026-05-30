@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 لعبة حقوق الطفل 🌟</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+
+  :root {
+    --pastel-pink: #FFB3C6;
+    --pastel-blue: #B3D9FF;
+    --pastel-yellow: #FFF3B3;
+    --pastel-green: #B3FFD1;
+    --pastel-purple: #E0B3FF;
+    --pastel-orange: #FFD9B3;
+    --correct: #4CAF50;
+    --wrong: #F44336;
+    --bg: #FFF5F7;
+    --card-bg: #FFFFFF;
+    --text-dark: #333;
+    --text-light: #666;
+    --primary: #FF6B9D;
+    --secondary: #6B9DFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: linear-gradient(135deg, #FFE0EC 0%, #E0F0FF 50%, #E8FFE0 100%);
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Floating decorations */
+  .decoration {
+    position: fixed;
+    font-size: 2rem;
+    animation: float 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+  .decoration:nth-child(1) { top: 5%; left: 3%; animation-delay: 0s; }
+  .decoration:nth-child(2) { top: 15%; right: 5%; animation-delay: 1s; }
+  .decoration:nth-child(3) { top: 40%; left: 2%; animation-delay: 2s; }
+  .decoration:nth-child(4) { top: 60%; right: 3%; animation-delay: 0.5s; }
+  .decoration:nth-child(5) { bottom: 20%; left: 5%; animation-delay: 1.5s; }
+  .decoration:nth-child(6) { bottom: 10%; right: 5%; animation-delay: 2.5s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(10deg); }
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 30px 20px;
+    background: white;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(255,107,157,0.2);
+    border: 3px solid var(--pastel-pink);
+  }
+  .header h1 {
+    font-size: 2.4rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FF6B9D, #6B9DFF, #FF9D6B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  .header p { color: var(--text-light); font-size: 1.1rem; }
+
+  /* Score bar */
+  .score-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: white;
+    border-radius: 20px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(107,157,255,0.2);
+    border: 3px solid var(--pastel-blue);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .score-item {
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 15px;
+    min-width: 110px;
+  }
+  .score-item.score { background: var(--pastel-green); }
+  .score-item.current { background: var(--pastel-yellow); }
+  .score-item.progress { background: var(--pastel-purple); }
+  .score-item .num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #333;
+    display: block;
+  }
+  .score-item .lbl {
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 700;
+  }
+
+  /* Progress bar */
+  .progress-track {
+    background: white;
+    border-radius: 20px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  }
+  .progress-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .progress-bg {
+    background: #eee;
+    border-radius: 50px;
+    height: 14px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #FF6B9D, #6B9DFF);
+    transition: width 0.5s ease;
+  }
+
+  /* Question card */
+  .question-card {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border: 3px solid var(--pastel-orange);
+    animation: slideIn 0.4s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .q-badge {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+  .q-badge.tf { background: var(--pastel-pink); color: #c44; }
+  .q-badge.mc { background: var(--pastel-blue); color: #446; }
+
+  .q-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  /* Answer buttons */
+  .answers {
+    display: grid;
+    gap: 12px;
+  }
+  .answers.tf-layout { grid-template-columns: 1fr 1fr; }
+  .answers.mc-layout { grid-template-columns: 1fr; }
+
+  .answer-btn {
+    padding: 14px 20px;
+    border: 3px solid #ddd;
+    border-radius: 18px;
+    background: white;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    color: #333;
+  }
+  .answer-btn:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    border-color: var(--primary);
+    background: #FFF0F6;
+  }
+  .answer-btn:disabled { cursor: not-allowed; }
+
+  .answer-btn.tf-true {
+    border-color: var(--pastel-green);
+    background: linear-gradient(135deg, #E8FFE8, #C8FFC8);
+    color: #2a7a2a;
+    font-size: 1.3rem;
+  }
+  .answer-btn.tf-false {
+    border-color: var(--pastel-pink);
+    background: linear-gradient(135deg, #FFE8E8, #FFC8C8);
+    color: #7a2a2a;
+    font-size: 1.3rem;
+  }
+  .answer-btn.tf-true:hover:not(:disabled) {
+    background: linear-gradient(135deg, #C8FFC8, #A0FFA0);
+  }
+  .answer-btn.tf-false:hover:not(:disabled) {
+    background: linear-gradient(135deg, #FFC8C8, #FFA0A0);
+  }
+
+  .answer-btn.correct {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32) !important;
+    border-color: #2E7D32 !important;
+    color: white !important;
+    transform: scale(1.03);
+    box-shadow: 0 6px 20px rgba(76,175,80,0.4) !important;
+    animation: correctPop 0.4s ease;
+  }
+  .answer-btn.wrong {
+    background: linear-gradient(135deg, #F44336, #C62828) !important;
+    border-color: #C62828 !important;
+    color: white !important;
+    animation: wrongShake 0.4s ease;
+  }
+  .answer-btn.reveal-correct {
+    background: linear-gradient(135deg, #81C784, #4CAF50) !important;
+    border-color: #4CAF50 !important;
+    color: white !important;
+    opacity: 0.8;
+  }
+
+  @keyframes correctPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1.03); }
+  }
+  @keyframes wrongShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  /* Feedback */
+  .feedback {
+    margin-top: 15px;
+    padding: 15px 20px;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .feedback.correct-fb { background: var(--pastel-green); color: #1a5a1a; display: block; }
+  .feedback.wrong-fb { background: var(--pastel-pink); color: #5a1a1a; display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Nav buttons */
+  .nav-area {
+    text-align: center;
+    margin-top: 20px;
+  }
+  .next-btn {
+    display: none;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #FF6B9D, #FF9D6B);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 5px 20px rgba(255,107,157,0.4);
+  }
+  .next-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255,107,157,0.5);
+  }
+  .next-btn.show { display: inline-block; animation: fadeIn 0.3s ease; }
+
+  /* Final screen */
+  .final-screen {
+    display: none;
+    text-align: center;
+    background: white;
+    border-radius: 30px;
+    padding: 50px 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    animation: slideIn 0.5s ease;
+  }
+  .final-emoji { font-size: 5rem; margin-bottom: 20px; }
+  .final-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  .final-score {
+    font-size: 4rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FF6B9D, #6B9DFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .final-msg {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.7;
+  }
+  .retry-btn {
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #6B9DFF, #9D6BFF);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(107,157,255,0.4);
+    transition: all 0.2s;
+  }
+  .retry-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(107,157,255,0.5); }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    animation: confettiFall 2s ease-in forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Stars animation for correct */
+  .star-burst {
+    position: fixed;
+    font-size: 2rem;
+    animation: starFly 1s ease-out forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+  @keyframes starFly {
+    0% { opacity: 1; transform: scale(0.5) translateY(0); }
+    100% { opacity: 0; transform: scale(2) translateY(-100px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating decorations -->
+<div class="decoration">⭐</div>
+<div class="decoration">🌈</div>
+<div class="decoration">🎨</div>
+<div class="decoration">🌟</div>
+<div class="decoration">🎈</div>
+<div class="decoration">🌺</div>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1>🏆 لعبة حقوق الطفل 🏆</h1>
+    <p>🌟 اختبر معلوماتك عن حقوق الطفل وذوي الاحتياجات الخاصة 🌟</p>
+  </div>
+
+  <!-- Score bar -->
+  <div class="score-bar">
+    <div class="score-item score">
+      <span class="num" id="scoreNum">0</span>
+      <span class="lbl">⭐ درجتي من 50</span>
+    </div>
+    <div class="score-item current">
+      <span class="num" id="correctNum">0</span>
+      <span class="lbl">✅ إجابات صحيحة</span>
+    </div>
+    <div class="score-item progress">
+      <span class="num" id="qNum">1</span>
+      <span class="lbl">📝 سؤال من 50</span>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-track">
+    <div class="progress-label">📊 التقدم في الاختبار</div>
+    <div class="progress-bg">
+      <div class="progress-fill" id="progressFill" style="width: 2%;"></div>
+    </div>
+  </div>
+
+  <!-- Question card -->
+  <div class="question-card" id="questionCard">
+    <div class="q-badge" id="qBadge">صح/خطأ</div>
+    <div class="q-text" id="qText">جاري التحميل...</div>
+    <div class="answers" id="answersDiv"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <!-- Nav area -->
+  <div class="nav-area">
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
+      السؤال التالي ← 
+    </button>
+  </div>
+
+  <!-- Final screen -->
+  <div class="final-screen" id="finalScreen">
+    <div class="final-emoji" id="finalEmoji">🏆</div>
+    <div class="final-title">انتهى الاختبار!</div>
+    <div class="final-score" id="finalScore">0/50</div>
+    <div class="final-msg" id="finalMsg">رسالة التقييم هنا</div>
+    <button class="retry-btn" onclick="restartQuiz()">🔄 حاول مرة تانية!</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  // ========== صح/خطأ (1-25) ==========
+  {type:"tf", text:"حقوق الطفل تنبثق من حقوق الإنسان وتُعدّ جزءاً منها.", correct: true},
+  {type:"tf", text:"أصدرت الجمعية العامة للأمم المتحدة إعلان حقوق الطفل عام 1959م.", correct: true},
+  {type:"tf", text:"الطفل في القانون المصري هو كل من لم يبلغ 21 سنة.", correct: false},
+  {type:"tf", text:"اتفاقية حقوق الطفل صدرت عام 1989م وتُعدّ أول وثيقة دولية شاملة لحقوق الإنسان.", correct: true},
+  {type:"tf", text:"أفلاطون وأرسطو دعيا إلى رعاية ذوي الاحتياجات الخاصة وإدماجهم في المجتمع.", correct: false},
+  {type:"tf", text:"الإسلام يرى أن العاهة أو الإعاقة هي ابتلاء من الله وليست عقوبة.", correct: true},
+  {type:"tf", text:"الميثاق الاجتماعي الأوربي صدر عام 1961م واعترف بحقوق المعاقين.", correct: true},
+  {type:"tf", text:"أعلنت الأمم المتحدة عام 1981م سنةً دولية للمعوقين.", correct: true},
+  {type:"tf", text:"المادة (23) من اتفاقية حقوق الطفل تتحدث عن حقوق الأطفال المعوقين في الحياة الكريمة والتعليم.", correct: true},
+  {type:"tf", text:"يحق للمعاق وفق ميثاق الأمم المتحدة التصويت والمشاركة السياسية.", correct: true},
+  {type:"tf", text:"السخرية من ذوي الاحتياجات الخاصة أمر مباح في الدين الإسلامي.", correct: false},
+  {type:"tf", text:"الميثاق الأفريقي لحقوق الطفل ورفاهيته صدر عام 1990م.", correct: true},
+  {type:"tf", text:"للمعاق وفق قرار الأمم المتحدة الحق في التعليم الأساسي والثانوي مجاناً كسائر الطلاب.", correct: true},
+  {type:"tf", text:"في العصور الوسطى في أوروبا كانت الكنيسة تدافع عن حقوق المعاقين وتحميهم.", correct: false},
+  {type:"tf", text:"اتفاقية حقوق الأشخاص ذوي الإعاقة اعتُمدت في 13 ديسمبر 2006م.", correct: true},
+  {type:"tf", text:"تشمل اتفاقية حقوق الطفل الأطفالَ ذوي الإعاقة حتى سن 18 سنة.", correct: true},
+  {type:"tf", text:"نسبة ذوي الاحتياجات الخاصة في أي مجتمع تتراوح بين 3 و10% من السكان.", correct: true},
+  {type:"tf", text:"من حق المعاق وفق المواثيق الدولية الزواج والإنجاب.", correct: true},
+  {type:"tf", text:"برنامج العمل العالمي المتعلق بالمعوقين صدر عام 1982م.", correct: true},
+  {type:"tf", text:"الطفل في الشريعة الإسلامية يعتبر قاصراً حتى بلوغه الخامسة عشرة من عمره.", correct: false},
+  {type:"tf", text:"الاتفاقية الأمريكية لحقوق الإنسان صدرت عام 1969م وتناولت حقوق ذوي العجز.", correct: true},
+  {type:"tf", text:"ميثاق حقوق الطفل العربي صدر عام 1983م.", correct: true},
+  {type:"tf", text:"حرّم الإسلام السخرية من الإنسان كما في سورة الحجرات الآية (11).", correct: true},
+  {type:"tf", text:"الدساتير العربية كلها تضمنت قوانين خاصة ومفصّلة بالمعوقين.", correct: false},
+  {type:"tf", text:"مجتمعات أوروبا القديمة مثل روما وإسبرطة كانت تهتم برعاية الأطفال المعاقين.", correct: false},
+
+  // ========== اختيار من متعدد (26-50) ==========
+  {type:"mc", text:"ما هي الفئات التي يشملها مصطلح 'ذوو الاحتياجات الخاصة'؟",
+    options:["المعاقون جسدياً وحسياً وذهنياً وأكاديمياً وتواصلياً وسلوكياً", "فقط المعاقون جسدياً", "فقط المعاقون ذهنياً", "فقط الصم والمكفوفون"],
+    correct: 0},
+  {type:"mc", text:"ما الذي تنص عليه المادة (23) من اتفاقية حقوق الطفل تحديداً؟",
+    options:["حقوق الطفل المعوق في حياة كريمة وكاملة ورعاية خاصة", "حق التعليم فقط", "منع التمييز العرقي", "حقوق الأطفال في الترفيه"],
+    correct: 0},
+  {type:"mc", text:"متى صدر إعلان حقوق المعوقين من الأمم المتحدة؟",
+    options:["1971م", "1959م", "1989م", "1983م"],
+    correct: 0},
+  {type:"mc", text:"كم عدد المبادئ التوجيهية لاتفاقية حقوق الأشخاص ذوي الإعاقة؟",
+    options:["ثمانية مبادئ", "خمسة مبادئ", "عشرة مبادئ", "ستة مبادئ"],
+    correct: 0},
+  {type:"mc", text:"ما الهدف السادس لميثاق حقوق الطفل العربي لعام 1983م؟",
+    options:["تأسيس نظام رعاية وتربية خاصة للأطفال المعوقين لاندماجهم في المجتمع", "توفير التعليم الجامعي", "بناء مراكز عزل المعوقين", "تعليم اللغات الأجنبية"],
+    correct: 0},
+  {type:"mc", text:"أيّ من هؤلاء الفلاسفة اليونانيين دعا إلى نفي المعاقين خارج الدولة؟",
+    options:["أفلاطون", "سقراط", "أرسطو", "أبو قراط"],
+    correct: 0},
+  {type:"mc", text:"ماذا يعني المعيار الاجتماعي لتحديد مرحلة الطفولة؟",
+    options:["مجموعة السمات الاجتماعية كالاعتماد على الكبار ومعدل النمو الخاص", "السن فقط", "القدرة على العمل", "الاعتراف القانوني"],
+    correct: 0},
+  {type:"mc", text:"أي من هذه الحقوق كفله ميثاق الأمم المتحدة للمعاق؟",
+    options:["الحقوق المدنية والسياسية والمشاركة في قرارات الدولة", "الحق في الانتخاب فقط", "الحق في التعليم فقط", "الحق في الزواج فقط"],
+    correct: 0},
+  {type:"mc", text:"ما الفرق بين الوطنية والمواطنة؟",
+    options:["الوطنية هي الانتماء العاطفي للوطن، أما المواطنة فهي الحقوق والواجبات القانونية", "لا يوجد فرق", "الوطنية للكبار والمواطنة للصغار", "المواطنة أكثر شمولاً فحسب"],
+    correct: 0},
+  {type:"mc", text:"ماذا أقرّ القانون الإسبرطي القديم بشأن الأطفال المعاقين؟",
+    options:["التخلص منهم بإلقائهم في النهر أو تعريضهم للبرد القارص", "رعايتهم في دور خاصة", "دمجهم في المجتمع", "تعليمهم الحرف اليدوية"],
+    correct: 0},
+  {type:"mc", text:"ما دور الأسرة في تربية الأطفال على المواطنة؟",
+    options:["غرس قيم الانتماء والتسامح ومراعاة الحقوق والواجبات من الصغر", "تعليم اللغات فقط", "الاهتمام بالدراسة الأكاديمية فحسب", "إرسالهم للمدارس الدولية"],
+    correct: 0},
+  {type:"mc", text:"وفق الاتفاقية الدولية للحقوق الاقتصادية والاجتماعية والثقافية 1966م، للطفل المعوق الحق في:",
+    options:["التعليم في مدارس عامة أو مدارس التربية الخاصة", "التعليم في مدارس عامة فقط", "التعليم في مدارس خاصة فقط", "لا يوجد نص على التعليم"],
+    correct: 0},
+  {type:"mc", text:"ماذا يشمل تعريف 'الطفل المعاق' قانونياً؟",
+    options:["كل طفل غير قادر على ممارسة الأنشطة التي يزاولها أقرانه بسبب قصور جسمي أو عقلي أو حسي أو ذهني", "فقط الطفل ذو القصور الجسمي", "الطفل الذي يتيم", "الطفل دون سن 6 سنوات"],
+    correct: 0},
+  {type:"mc", text:"ما المقصود بحق 'المواطنة' وفق كتاب حقوق الطفل؟",
+    options:["الحق في العيش بكرامة والمشاركة في المجتمع مع الحقوق والواجبات المترتبة", "حق التصويت فقط", "حق العمل فقط", "حق الزواج"],
+    correct: 0},
+  {type:"mc", text:"ما دور وسائل الإعلام في تربية الأطفال على المواطنة؟",
+    options:["نشر ثقافة حقوق الإنسان وقيم التعايش والتسامح بين الأجيال", "الترفيه فقط", "الإعلان عن المنتجات", "لا دور لها"],
+    correct: 0},
+  {type:"mc", text:"أيّ اتفاقية دولية وصفها الأمين العام للأمم المتحدة بأنها 'أهم وثيقة من وثائق حقوق الإنسان'؟",
+    options:["اتفاقية حقوق الطفل 1989م", "الميثاق الأفريقي 1981م", "الإعلان العالمي لحقوق الإنسان 1948م", "الاتفاقية الأمريكية 1969م"],
+    correct: 0},
+  {type:"mc", text:"من الذي أصدر الإعلان الخاص بحقوق المتخلفين عقلياً عام 1971م؟",
+    options:["الجمعية العامة للأمم المتحدة", "منظمة العمل الدولية", "اليونيسكو", "الصليب الأحمر الدولي"],
+    correct: 0},
+  {type:"mc", text:"ما السبب الرئيسي لضرورة تثقيف ذوي الاحتياجات الخاصة بحقوقهم؟",
+    options:["حتى يتمكنوا من ممارسة هذه الحقوق والمطالبة بها والدفاع عنها", "لمجرد التثقيف دون فائدة عملية", "لاستخدامها في المقابلات الوظيفية", "لا ضرورة لذلك"],
+    correct: 0},
+  {type:"mc", text:"ما المعيار الزمني لتحديد الطفولة وفق القانون المصري رقم 12 لسنة 1996م؟",
+    options:["كل من لم يبلغ ثمانية عشر سنة ميلادية كاملة", "كل من لم يبلغ 15 سنة", "كل من لم يبلغ 21 سنة", "كل من لم يبلغ 10 سنوات"],
+    correct: 0},
+  {type:"mc", text:"أيّ الدول العربية لها قوانين خاصة تفصيلية بحقوق المعوقين؟",
+    options:["مصر والعراق وتونس والأردن وسوريا وليبيا", "فقط السعودية واليمن", "الكويت والإمارات فقط", "لا توجد دولة عربية"],
+    correct: 0},
+  {type:"mc", text:"ما المقصود بـ'التعديلات التيسيرية' في اتفاقية الأشخاص ذوي الإعاقة؟",
+    options:["الترتيبات اللازمة لضمان تمتع الأشخاص ذوي الإعاقة بحقوقهم على قدم المساواة مع الآخرين", "التعديلات في القوانين فقط", "تعديل الدستور", "البنية التحتية فقط"],
+    correct: 0},
+  {type:"mc", text:"ما حق الطفل المعاق في الكشف المبكر وفق الميثاق الدولي؟",
+    options:["الحق في الكشف المبكر عن نوع عجزه والاستشارة الطبية المناسبة", "الحق في الدواء المجاني فقط", "الحق في الإعفاء من الدراسة", "الحق في مخصص مالي شهري"],
+    correct: 0},
+  {type:"mc", text:"ما الرسالة التي أعلنت عنها الأمم المتحدة عام 1993م للمعوقين؟",
+    options:["القواعد الموحدة بشأن تحقيق تكافؤ الفرص للمعاقين", "برنامج العمل العالمي", "الإعلان العالمي لحقوق الإنسان", "ميثاق حقوق الطفل العربي"],
+    correct: 0},
+  {type:"mc", text:"ما دور مؤسسات التربية الخاصة تجاه الأطفال ذوي الاحتياجات الخاصة؟",
+    options:["تقليل الفجوة بينهم وبين أقرانهم العاديين وتقديم البدائل الخدمية الملائمة", "عزلهم عن بقية الأطفال", "تعليمهم التعليم النظري فقط", "إعداد تقارير طبية"],
+    correct: 0},
+  {type:"mc", text:"ما المقصود بـ'ثقافة حقوق الطفل ذوي الاحتياجات الخاصة'؟",
+    options:["نشر الوعي بحقوقهم في كل مؤسسات المجتمع الرسمية وغير الرسمية", "تعليم الثقافة العامة فقط", "برامج الترفيه المدرسي", "القوانين المكتوبة دون تطبيق"],
+    correct: 0}
+];
+
+let current = 0;
+let score = 0;
+let correct = 0;
+let answered = false;
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Shuffle questions at start
+const shuffledQuestions = shuffle([...questions]);
+// Track original correct index for mc questions
+shuffledQuestions.forEach(q => {
+  if (q.type === 'mc') {
+    const opts = q.options.map((o,i) => ({text: o, origIdx: i}));
+    shuffle(opts);
+    q.shuffledOptions = opts.map(o => o.text);
+    q.shuffledCorrect = opts.findIndex(o => o.origIdx === q.correct);
+  }
+});
+
+function loadQuestion() {
+  answered = false;
+  const q = shuffledQuestions[current];
+  const qBadge = document.getElementById('qBadge');
+  const qText = document.getElementById('qText');
+  const answersDiv = document.getElementById('answersDiv');
+  const feedback = document.getElementById('feedback');
+  const nextBtn = document.getElementById('nextBtn');
+  const qCard = document.getElementById('questionCard');
+
+  // Animate card
+  qCard.style.animation = 'none';
+  void qCard.offsetWidth;
+  qCard.style.animation = 'slideIn 0.4s ease';
+
+  if (q.type === 'tf') {
+    qBadge.textContent = '✏️ صح / خطأ';
+    qBadge.className = 'q-badge tf';
+    answersDiv.className = 'answers tf-layout';
+    answersDiv.innerHTML = `
+      <button class="answer-btn tf-true" onclick="answer(this, true)" data-val="true">
+        ✅ صح
+      </button>
+      <button class="answer-btn tf-false" onclick="answer(this, false)" data-val="false">
+        ❌ خطأ
+      </button>
+    `;
+  } else {
+    qBadge.textContent = '🎯 اختيار من متعدد';
+    qBadge.className = 'q-badge mc';
+    answersDiv.className = 'answers mc-layout';
+    const opts = q.shuffledOptions;
+    const letters = ['أ', 'ب', 'ج', 'د'];
+    answersDiv.innerHTML = opts.map((opt, i) =>
+      `<button class="answer-btn" onclick="answer(this, ${i})" data-val="${i}">
+        <strong>${letters[i]}) </strong>${opt}
+      </button>`
+    ).join('');
+  }
+
+  qText.textContent = `${current + 1}. ${q.text}`;
+  feedback.className = 'feedback';
+  feedback.textContent = '';
+  nextBtn.className = 'next-btn';
+
+  // Update UI
+  document.getElementById('qNum').textContent = current + 1;
+  const pct = ((current) / shuffledQuestions.length * 100).toFixed(0);
+  document.getElementById('progressFill').style.width = Math.max(2, pct) + '%';
+}
+
+function answer(btn, val) {
+  if (answered) return;
+  answered = true;
+
+  const q = shuffledQuestions[current];
+  const allBtns = document.querySelectorAll('.answer-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  let isCorrect = false;
+  if (q.type === 'tf') {
+    isCorrect = (val === q.correct);
+    // highlight correct
+    allBtns.forEach(b => {
+      const bval = b.dataset.val === 'true' ? true : false;
+      if (bval === q.correct) b.classList.add('reveal-correct');
+    });
+  } else {
+    isCorrect = (val === q.shuffledCorrect);
+    // highlight correct
+    allBtns.forEach((b, i) => {
+      if (i === q.shuffledCorrect) b.classList.add('reveal-correct');
+    });
+  }
+
+  const feedback = document.getElementById('feedback');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    score++;
+    correct++;
+    feedback.className = 'feedback correct-fb';
+    const msgs = ['🎉 برافو عليك يا بطل!', '⭐ إجابة رائعة!', '🌟 ممتاز يا نجم!', '🏆 احترافي يا سيد!', '✨ صح تماماً!', '🎊 رائع جداً!'];
+    feedback.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+    spawnStars(btn);
+  } else {
+    btn.classList.add('wrong');
+    feedback.className = 'feedback wrong-fb';
+    const msgs = ['😊 معلش، حاول تاني!', '💪 مش مشكلة، تعلمنا منها!', '🌈 قريب جداً!', '📚 راجع المعلومة دي!', '😅 الحظ مع السؤال الجاي!'];
+    feedback.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+  }
+
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('correctNum').textContent = correct;
+
+  const nextBtn = document.getElementById('nextBtn');
+  if (current < shuffledQuestions.length - 1) {
+    nextBtn.textContent = 'السؤال التالي ←';
+  } else {
+    nextBtn.textContent = '🏁 عرض النتيجة!';
+  }
+  nextBtn.className = 'next-btn show';
+}
+
+function spawnStars(btn) {
+  const rect = btn.getBoundingClientRect();
+  const emojis = ['⭐','🌟','✨','🎉','💫'];
+  for (let i = 0; i < 4; i++) {
+    const star = document.createElement('div');
+    star.className = 'star-burst';
+    star.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    star.style.left = (rect.left + Math.random() * rect.width) + 'px';
+    star.style.top = (rect.top + window.scrollY) + 'px';
+    star.style.animationDelay = (i * 0.1) + 's';
+    document.body.appendChild(star);
+    setTimeout(() => star.remove(), 1200);
+  }
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= shuffledQuestions.length) {
+    showFinal();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showFinal() {
+  document.getElementById('questionCard').style.display = 'none';
+  document.getElementById('progressFill').style.width = '100%';
+  document.querySelector('.nav-area').style.display = 'none';
+  const finalScreen = document.getElementById('finalScreen');
+  finalScreen.style.display = 'block';
+
+  const pct = (score / shuffledQuestions.length * 100).toFixed(0);
+  document.getElementById('finalScore').textContent = score + '/50';
+
+  let emoji, msg;
+  if (pct >= 90) {
+    emoji = '🏆🌟🎊'; msg = 'إنت نجم حقيقي يا بطل! معرفتك بحقوق الطفل ذوي الاحتياجات الخاصة رائعة جداً! 🎉';
+  } else if (pct >= 75) {
+    emoji = '⭐🎉👏'; msg = 'أحسنت يا مميز! نتيجة جيدة جداً، واصل التعلم! 💪';
+  } else if (pct >= 60) {
+    emoji = '😊📚✨'; msg = 'كويس! عندك قاعدة معلومات جيدة، حاول تراجع أكتر! 🌈';
+  } else if (pct >= 40) {
+    emoji = '💪🌱📖'; msg = 'بداية حلوة! المذاكرة هتوصلك للنجومية! 🚀';
+  } else {
+    emoji = '🤗💡📚'; msg = 'لا تيأس! كل عبقري بدأ من الصفر، راجع الكتاب وحاول تاني! 🌟';
+  }
+
+  document.getElementById('finalEmoji').textContent = emoji;
+  document.getElementById('finalMsg').textContent = msg;
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const colors = ['#FF6B9D','#6B9DFF','#FFD93D','#6BCF7F','#FF922B','#B47BFF'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.top = '-20px';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.transform = `rotate(${Math.random()*360}deg)`;
+      c.style.animationDuration = (1.5 + Math.random()) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2500);
+    }, i * 40);
+  }
+}
+
+function restartQuiz() {
+  current = 0; score = 0; correct = 0; answered = false;
+  shuffle(shuffledQuestions);
+  shuffledQuestions.forEach(q => {
+    if (q.type === 'mc') {
+      const opts = q.options.map((o,i) => ({text: o, origIdx: i}));
+      shuffle(opts);
+      q.shuffledOptions = opts.map(o => o.text);
+      q.shuffledCorrect = opts.findIndex(o => o.origIdx === q.correct);
+    }
+  });
+  document.getElementById('finalScreen').style.display = 'none';
+  document.getElementById('questionCard').style.display = 'block';
+  document.querySelector('.nav-area').style.display = 'block';
+  document.getElementById('scoreNum').textContent = 0;
+  document.getElementById('correctNum').textContent = 0;
+  loadQuestion();
+}
+
+// Start!
+loadQuestion();
+</script>
+</body>
+</html>
